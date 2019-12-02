@@ -4,14 +4,14 @@
 
 (defn grav-assist
   [input]
-  (get (loop [iter 0 arr input]
-         (if (or (> iter (- (count arr) 1)) (= (get (subvec arr (+ iter 0) (+ iter 1)) 0) 99))
-           arr
-           (recur (+ iter 4)
-                  (assoc arr (get arr (+ iter 3) 0)
-                             ((determine-op (get arr iter))
-                              (get arr (first (subvec arr (+ iter 1) (+ iter 2))))
-                              (get arr (first (subvec arr (+ iter 2) (+ iter 3))))))))) 0))
+  (first (loop [iter 0 arr input]
+           (if (or (> iter (- (count arr) 1)) (= (get (subvec arr (+ iter 0) (+ iter 1)) 0) 99))
+             arr
+             (recur (+ iter 4)
+                    (assoc arr (get arr (+ iter 3) 0)
+                               ((determine-op (get arr iter))
+                                (get arr (first (subvec arr (+ iter 1) (+ iter 2))))
+                                (get arr (first (subvec arr (+ iter 2) (+ iter 3)))))))))))
 
 (defn determine-input
   [input grav-assist]
