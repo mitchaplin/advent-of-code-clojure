@@ -24,6 +24,12 @@
                                          \L [(list x (- x length)) y]
                                          \R [(list x (+ length x)) y]))
 
+(defn determine-direction
+  [[x1 y1]]
+  (if (list? x1)
+    (if (> (first x1) (second x1)) \L \R)
+    (if (> (first y1) (second y1)) \U \D)))
+
 (defn determine-intersection
   [[x1 y1] [x2 y2]]
   (if (list? x1)
@@ -37,14 +43,25 @@
     (and (alpha/int-in-range? (first x1) (inc (second x1)) x) (= y y1))
     (and (alpha/int-in-range? (first y1) (inc (second y1)) y) (= x x1))))
 
+(defn length-of-segment [[x1 y1]]
+  (if (list? x1)
+    (count (range (first x1) (second x1)))
+    (count (range (first y1) (second y1)))))
+
+(defn length-to-point [[x y] [x1 y1]]
+  (case (determine-direction [x1 y1])
+    \D (- (Math/abs (second y1)) (Math/abs y))
+    \U (- (Math/abs y) (Math/abs (first y1)))
+    \L (- (Math/abs x) (Math/abs (first x1)))
+    \R (- (Math/abs (second x1)) (Math/abs x))))
+
 (defn get-line-length [input point] (loop
                                       [inp input count 0]
                                       (if (empty? inp)
                                         count
                                         (if (point-in-seg point (first inp))
-                                          count
-                                          (recur (rest inp) (inc count))))))
-
+                                          (+ count (length-to-point point (first inp)))
+                                          (recur (rest inp) (+ count (length-of-segment (first inp))))))))
 
 (defn make-segments [input] (loop [segments input
                                    acc []
