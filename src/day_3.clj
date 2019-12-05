@@ -89,7 +89,7 @@
   (remove nil? (reduce #(conj %1 (determine-intersection segment %2)) '() coll)))
 
 (defn find-closest-intersection []
-  (apply min (map (fn [[x y]] (+ (Math/abs x) (Math/abs y))) (compare-segments))))
+  (map (fn [[x y]] (+ (Math/abs x) (Math/abs y))) (compare-segments)))
 
 (defn determine-width [] (reduce + (map #(isolate-steps %) input)))
 (defn determine-height [] (reduce + (map #(isolate-steps %)) input))
@@ -111,6 +111,7 @@
 
 ;(def board (gen-board (determine-width) (determine-height) (constantly ".")))
 
+(def board (gen-board 25 25 (constantly ".")))
 (defn trace-wires [board input] (loop [data input
                                        pointer [10 10]
                                        stepper (isolate-steps (first data))
@@ -137,7 +138,6 @@
 
 (defn run-both-datasets [] (trace-wires (trace-wires board (first test-data)) (second test-data)))
 
-(defn determine-closest-point [] "")
 
 
 
