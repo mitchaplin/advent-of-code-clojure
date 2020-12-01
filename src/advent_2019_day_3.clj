@@ -1,4 +1,4 @@
-(ns day_3
+(ns advent_2019_day_3
   (:require [clojure.string :as str])
   (:require [clojure.set :as set])
   (:require [clojure.spec.alpha :as alpha]))

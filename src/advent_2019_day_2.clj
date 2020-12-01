@@ -1,7 +1,7 @@
-(ns day_5
+(ns advent_2019_day_2
   (:require [clojure.string :as str]))
 
-(def raw (slurp "resources/day_2.txt"))
+(def raw (slurp "resources/2019/day_2.txt"))
 (def processed (mapv #(Integer/parseInt %)
                      (str/split (str/trim-newline raw) #",")))
 
@@ -29,29 +29,3 @@
           (recur (inc noun) 0 (grav-assist inp) (assoc inp 1 noun))
           (recur noun (inc verb) (grav-assist inp) (assoc inp 2 verb)))))))
 
-(defn formatted-inst [inst] (cons (map #(Integer/parseInt %) (str/split (first (cons (format "%05d" (check-mode inst)) (rest inst))) #"")) (rest inst)))
-
-(defn check-op
-  [inst]
-  (str/join (nthrest (first (formatted-inst inst)) (- (count (first (formatted-inst inst))) 2)))) ;"01"
-
-(defn check-mode
-  [inst]
-  (Integer/parseInt (str/join (first inst))))
-
-
-;mode 1 op 02 inst full
-;1002,4,3,4,33
-;; halt cond 3,0,4,0,99
-
-;;3,50 put 3 at 50?
-;;4,50 output the value at address 50
-
-;(cons (reverse (list (last (take-nth (- (count '(1 0 0 2)) 1) '(1 0 0 2))) (last (take-nth (- (count '(1 0 0 2)) 2) '(1 0 0 2))))) '(4 3 4 3))
-;(str/join (nthrest '(1 0 0 2) (- (count '(1 0 0 2)) 2)))
-
-;Parameters that an instruction writes to will never be in immediate mode. ???
-
-;what does 3,50 actually do?
-
-;what are we outputting

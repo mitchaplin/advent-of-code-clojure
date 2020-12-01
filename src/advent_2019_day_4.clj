@@ -12,8 +12,10 @@
               (apply <= (digits pass)))
             (filter #(<
                        (count
-                         (->> (digits %) (partition-by identity)
-                              (remove next) (map first))) 6) pw)))
+                         (->> (digits %)
+                              (partition-by identity)
+                              (remove next)
+                              (map first))) 6) pw)))
 
 
 (defn partition-passwords

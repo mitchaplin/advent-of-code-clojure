@@ -1,4 +1,4 @@
-(ns day_8
+(ns advent_2019_day_8
   (:require [clojure.string :as str]))
 
 (def raw (slurp "resources/day_8.txt"))
