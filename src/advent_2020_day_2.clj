@@ -21,10 +21,6 @@
       0)))
 
 ;PART 2 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-(defn indexes-of
-  [e coll]
-  (keep-indexed #(if (= e %2) %1) coll))
-
 (defn valid-logic
   [n s]
   (= (count (set (map #(utils/in? s %) n))) 2))
