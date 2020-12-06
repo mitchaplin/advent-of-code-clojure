@@ -42,4 +42,8 @@
                    (nthrest d down)))))))
 
 ;PART 2 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-(reduce * (map #(apply calc-trees %) [[1 1 processed] [3 1 processed] [5 1 processed] [7 1 processed] [1 2 processed]]))
+(reduce * (map #(apply calc-trees %) [[1 1 processed]
+                                      [3 1 processed]
+                                      [5 1 processed]
+                                      [7 1 processed]
+                                      [1 2 processed]]))

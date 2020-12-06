@@ -22,3 +22,5 @@
   "retrieves indexs of items in a vector"
   [e coll]
   (keep-indexed #(if (= e %2) %1) coll))
+
+(<= 1920 % 2002)
