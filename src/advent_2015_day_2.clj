@@ -40,9 +40,10 @@
                            (conj acc (calc-present-total (first remaining)))))))))
 
 (defn determine-and-calc-present-mins
-  [present] (+ (reduce + (flatten (map (fn [x] (repeat 2 x))
-                                       (remove #(= (apply max (drop-last present)) %)
-                                               (drop-last present))))) (apply * (drop-last present))))
+  [present]
+  (+ (reduce + (flatten (map (fn [x] (repeat 2 x))
+                             (remove #(= (apply max (drop-last present)) %)
+                                     (drop-last present))))) (apply * (drop-last present))))
 
 (defn calc-square
   [[l w h]]

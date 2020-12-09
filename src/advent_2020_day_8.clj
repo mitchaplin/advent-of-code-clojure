@@ -14,7 +14,6 @@
 
 (defn get-next-inst
   [inst pointer acc]
-  (println inst)
   (cond (= (subs inst 0 3) "nop")
         (list (inc pointer) acc)
         (= (subs inst 0 3) "jmp")
@@ -30,7 +29,7 @@
          acc 0
          visited [0]]
     (let [n (get-next-inst inst pointer acc)
-          _ (println n)
+          ;_ (println n)
           dupe (check-dupe-inst? visited (first n))]
       (if dupe
         (list dupe acc)
@@ -76,7 +75,6 @@
          acc 0
          visited [0]]
     (let [n (get-next-inst inst pointer acc)
-          _ (println n)
           dupe (check-dupe-inst? visited (first n))]
       (if (or dupe (check-last-inst (first n) data))
         (list (check-last-inst (first n) data) acc)
