@@ -41,7 +41,8 @@
 
 (defn determine-and-calc-present-mins
   [present]
-  (+ (reduce + (flatten (map (fn [x] (repeat 2 x))
+  (+ (reduce + (flatten (map (fn [x]
+                               (repeat 2 x))
                              (remove #(= (apply max (drop-last present)) %)
                                      (drop-last present))))) (apply * (drop-last present))))
 

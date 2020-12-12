@@ -2,7 +2,9 @@
 (defn in?
   "true if coll contains elm"
   [coll elm]
-  (some #(= elm %) coll))
+  (if (nil? (some #(= elm %) coll))
+    false
+    true))
 ;
 ;(defn permutations
 ;  "combinations 2x"
@@ -23,3 +25,10 @@
 ;  [e coll]
 ;  (keep-indexed #(if (= e %2) %1) coll))
 
+
+(defn seq-contains?
+  "Determine whether a sequence contains a given item"
+  [sequence item]
+  (if (empty? sequence)
+    false
+    (reduce #(or %1 %2) (map #(= %1 item) sequence))))
