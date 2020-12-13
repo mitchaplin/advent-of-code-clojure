@@ -97,7 +97,7 @@
     (loop [acc 0
            newx x
            newy (inc y)]
-      (if (or (> newy max-size) (> acc 0))
+      (if (or (> newy max-size) (> acc 0) (and (= \L (get (get board newy) newx)) (zero? acc)))
         (if (> acc 0) 1 0)
         (recur (+ acc (if (= \# (get (get board newy) newx)) 1 0))
                newx
@@ -107,7 +107,7 @@
     (loop [acc 0
            newx x
            newy (dec y)]
-      (if (or (< newy 0) (> acc 0))
+      (if (or (< newy 0) (> acc 0) (and (= \L (get (get board newy) newx)) (zero? acc)))
         (if (> acc 0) 1 0)
         (recur (+ acc (if (= \# (get (get board newy) newx)) 1 0))
                newx
@@ -117,7 +117,7 @@
     (loop [acc 0
            newx (inc x)
            newy y]
-      (if (or (> newx max-size) (> acc 0))
+      (if (or (> newx max-size) (> acc 0) (and (= \L (get (get board newy) newx)) (zero? acc)))
         (if (> acc 0) 1 0)
         (recur (+ acc (if (= \# (get (get board newy) newx)) 1 0))
                (inc newx)
@@ -127,7 +127,7 @@
     (loop [acc 0
            newx (dec x)
            newy y]
-      (if (or (< newx 0) (> acc 0))
+      (if (or (< newx 0) (> acc 0) (and (= \L (get (get board newy) newx)) (zero? acc)))
         (if (> acc 0) 1 0)
         (recur (+ acc (if (= \# (get (get board newy) newx)) 1 0))
                (dec newx)
@@ -137,7 +137,7 @@
     (loop [acc 0
            newx (inc x)
            newy (inc y)]
-      (if (or (or (> newy max-size) (> newx max-len)) (> acc 0))
+      (if (or (or (> newy max-size) (> newx max-len)) (> acc 0) (and (= \L (get (get board newy) newx)) (zero? acc)))
         (if (> acc 0) 1 0)
         (recur (+ acc (if (= \# (get (get board newy) newx)) 1 0))
                (inc newx)
@@ -147,7 +147,7 @@
     (loop [acc 0
            newx (dec x)
            newy (dec y)]
-      (if (or (or (< newy 0) (< newx 0)) (> acc 0))
+      (if (or (or (< newy 0) (< newx 0)) (> acc 0) (and (= \L (get (get board newy) newx)) (zero? acc)))
         (if (> acc 0) 1 0)
         (recur (+ acc (if (= \# (get (get board newy) newx)) 1 0))
                (dec newx)
@@ -157,7 +157,7 @@
     (loop [acc 0
            newx (dec x)
            newy (inc y)]
-      (if (or (or (> newy max-size) (< newx 0)) (> acc 0))
+      (if (or (or (> newy max-size) (< newx 0)) (> acc 0) (and (= \L (get (get board newy) newx)) (zero? acc)))
         (if (> acc 0) 1 0)
         (recur (+ acc (if (= \# (get (get board newy) newx)) 1 0))
                (dec newx)
@@ -167,7 +167,7 @@
     (loop [acc 0
            newx (inc x)
            newy (dec y)]
-      (if (or (or (< newy 0) (> newx max-len)) (> acc 0))
+      (if (or (or (< newy 0) (> newx max-len)) (> acc 0) (and (= \L (get (get board newy) newx)) (zero? acc)))
         (if (> acc 0) 1 0)
         (recur (+ acc (if (= \# (get (get board newy) newx)) 1 0))
                (inc newx)
@@ -226,3 +226,4 @@
     (if (= init new-snap)
       (reduce + (map count (map #(re-seq #"#" %) new-snap)))
       (compare-results-2 new-snap 0 0))))
+

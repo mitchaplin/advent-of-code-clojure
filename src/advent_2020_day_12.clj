@@ -16,19 +16,14 @@
               (list (- (first pointer) dist) (second pointer) dir)
               (= dir 3)
               (list (first pointer) (+ dist (second pointer)) dir))
-
         (= inst "N")
         (list (first pointer) (+ dist (second pointer)) dir)
-
         (= inst "S")
         (list (first pointer) (- (second pointer) dist) dir)
-
         (= inst "E")
         (list (+ dist (first pointer)) (second pointer) dir)
-
         (= inst "W")
         (list (- (first pointer) dist) (second pointer) dir)
-
         :else
         (list (first pointer) (second pointer) dir)))
 
@@ -40,13 +35,11 @@
         2
         (= dist 270)
         3
-
         :else
         dir))
 
 (defn check-neg
   [dist dir]
-  (println "neg")
   (let [n (- dir (transform-degrees dist dir))]
     (if (neg? n)
       (Math/abs (- 4 (Math/abs n)))
@@ -54,7 +47,6 @@
 
 (defn check-g4
   [dist dir]
-  (println "g4")
   (let [n (+ (transform-degrees dist dir) dir)]
     (if (> n 3)
       (Math/abs (- 4 n))
@@ -62,7 +54,6 @@
 
 (defn update-dir
   [inst dist dir]
-  (println "test")
   (cond (= inst "R")
         (if (or (= dist 360) (= dist 0))
           dir
@@ -84,9 +75,7 @@
       (let [i (first d)
             [inst dist] (list (subs i 0 1) (Integer/parseInt (subs i 1)))
             new-dir (update-dir inst dist (last pointer))
-            _ (println new-dir)
-            new-pointer (update-pointer pointer inst dist new-dir)
-            _ (println new-pointer)]
+            new-pointer (update-pointer pointer inst dist new-dir)]
         (recur (rest d) new-pointer)))))
 
 ;PART 2 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -103,54 +92,46 @@
   (cond
     (= inst "R")
     (cond (= dist 90)
-          (list (second waypoint) (unchecked-negate-int (first waypoint)))
-
+          (list (second waypoint)
+                (unchecked-negate-int (first waypoint)))
           (= dist 180)
-          (list (unchecked-negate-int (first waypoint)) (unchecked-negate-int (second waypoint)))
-
+          (list (unchecked-negate-int (first waypoint))
+                (unchecked-negate-int (second waypoint)))
           (= dist 270)
-          (list (unchecked-negate-int (second waypoint)) (first waypoint))
-
+          (list (unchecked-negate-int (second waypoint))
+                (first waypoint))
           (= dist 360)
           waypoint
-
           (= dist 0)
           waypoint
-
           :else
           waypoint)
 
     (= inst "L")
     (cond (= dist 90)
-          (list (unchecked-negate-int (second waypoint)) (first waypoint))
-
+          (list (unchecked-negate-int (second waypoint))
+                (first waypoint))
           (= dist 180)
-          (list (unchecked-negate-int (first waypoint)) (unchecked-negate-int (second waypoint)))
-
+          (list (unchecked-negate-int (first waypoint))
+                (unchecked-negate-int (second waypoint)))
           (= dist 270)
-          (list (second waypoint) (unchecked-negate-int (first waypoint)))
-
+          (list (second waypoint) (unchecked-negate-int
+                                    (first waypoint)))
           (= dist 360)
           waypoint
-
           (= dist 0)
           waypoint
-
           :else
           waypoint)
 
     (= inst "N")
     (list (first waypoint) (+ dist (second waypoint)))
-
     (= inst "S")
     (list (first waypoint) (- (second waypoint) dist))
-
     (= inst "E")
     (list (+ dist (first waypoint)) (second waypoint))
-
     (= inst "W")
     (list (- (first waypoint) dist) (second waypoint))
-
     :else
     (list (first waypoint) (second waypoint))))
 
@@ -159,10 +140,10 @@
   (loop [d data
          binary [[0 0] [10 1]]]
     (if (empty? d)
-      (+ (Math/abs (ffirst binary)) (Math/abs (second (first binary))))
+      (+ (Math/abs (ffirst binary))
+         (Math/abs (second (first binary))))
       (let [i (first d)
             [inst dist] (list (subs i 0 1) (Integer/parseInt (subs i 1)))
             new-waypoint (update-waypoint binary inst dist)
             new-binary (update-ship (list (first binary) new-waypoint) inst dist)]
-
-        (recur (rest d)  new-binary)))))
+        (recur (rest d) new-binary)))))
