@@ -49,7 +49,7 @@
                                \#
                                (subs row (inc x)))))
 
-          (and (>= seat-total 4 (= seat \#)))
+          (and (>= seat-total 4) (= seat \#))
           (update board y
                   (fn [_] (str (subs row 0 x)
                                \L
