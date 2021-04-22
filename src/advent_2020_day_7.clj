@@ -2,7 +2,7 @@
   (:require [clojure.string :as str]))
 
 
-(def raw (slurp "resources/2020/day_7.txt"))
+(def raw (slurp "resources/2020/day_6_practice.txt"))
 (def processed (str/split-lines raw))
 
 (defn arrange-bags

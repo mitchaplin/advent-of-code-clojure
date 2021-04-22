@@ -32,3 +32,15 @@
   (if (empty? sequence)
     false
     (reduce #(or %1 %2) (map #(= %1 item) sequence))))
+
+(defn explode [coll n]
+  (reduce (fn [colls xs]
+            (map #(if %2 (conj %1 %2) %1)
+                 colls
+                 (concat xs (repeat nil))))
+          (repeat n [])
+          (partition-all n coll)))
+
+(defn number-sort
+  [mylist]
+  (apply <= mylist))
