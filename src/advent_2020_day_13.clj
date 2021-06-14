@@ -57,8 +57,7 @@
       acc
       (let [s1 (series start (second (second d)) (first (second d)))
             s2 (series-2 start (second (second d)) (first (second d)))
-            next (second s2)
-            _ (println start s1 s2 "TEST" (count d))]
+            next (second s2)]
         (recur (rest d)
                next
                (- (second (first s1)) (second s2)))))))

@@ -55,30 +55,30 @@
                                    (map #(find-starting-vals %) acc))))))))
 
 ;PART 2 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-;(defn count-bags
-;  []
-;  (loop [r (parse-rules)
-;         acc [1]
-;         n {"shiny gold" 1, "shiny golf" 4}]
-;    (let [f (get r (ffirst n))
-;          new-acc (if (not (or (nil? f)
-;                               (empty? f)))
-;                    (list (conj acc
-;                                (+ (second (first n))
-;                                   (* (second (first n))
-;                                      (reduce + (map second
-;                                                     (get r (ffirst n)))))))
-;                          (into {} (rest (cons n (get (parse-rules) (ffirst n))))))
-;                    (list acc (into {} (rest n))))
-;          _ (println "num" (second (first n)) new-acc)]
-;      (if (empty? n)
-;        (reduce + acc)
-;        (recur r (first new-acc) (second new-acc))))))
+(defn count-bags-1
+  []
+  (loop [r (parse-rules)
+         acc [1]
+         n {"shiny gold" 1, "shiny golf" 4}]
+    (let [f (get r (ffirst n))
+          new-acc (if (not (or (nil? f)
+                               (empty? f)))
+                    (list (conj acc
+                                (+ (second (first n))
+                                   (* (second (first n))
+                                      (reduce + (map second
+                                                     (get r (ffirst n)))))))
+                          (into {} (rest (cons n (get (parse-rules) (ffirst n))))))
+                    (list acc (into {} (rest n))))
+          _ (println "num" (second (first n)) new-acc)]
+      (if (empty? n)
+        (reduce + acc)
+        (recur r (first new-acc) (second new-acc))))))
 
-(defn count-bags
+(defn count-bags-2
   [parsed-input instruction]
   (if (empty? (parsed-input instruction))
     1
-    (inc (apply + (map #(* (count-bags parsed-input %)
+    (inc (apply + (map #(* (count-bags-2 parsed-input %)
                            ((parsed-input instruction) %))
                        (keys (parsed-input instruction)))))))

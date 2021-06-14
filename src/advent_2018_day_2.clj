@@ -3,10 +3,10 @@
             [clojure.math.combinatorics :as comb]))
 
 (def practice
-  `("nfghij" "abcde" "nklmno" "npqrst" "nfguij" "naxcye" "nwvxyz"))
+  ["fghij" "abcde" "klmno" "pqrst" "fguij" "axcye" "wvxyz"])
 
 (def raw (slurp "resources/2018/day_2.txt"))
-(def processed (map #(str/split raw #"\n")))
+(def processed (str/split-lines raw))
 
 ;PART 1 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 (defn total-dupes
@@ -34,19 +34,24 @@
 ;PART 2 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 (defn compare-letters
   [s r]
-  (remove empty? (flatten
-                   (map #(remove nil?
-                                 (cond (= 1 (Math/abs (compare (apply str (sort s))
-                                                               (apply str (sort %)))))
-                                       (list s %))) r))))
+  (let [sets (map #(clojure.set/intersection (set (sort s))
+                                             (set (sort %))) r)
+        diff (apply str (first (map #(clojure.set/difference (set (sort s))
+                                                             (set (sort %))) r)))
+        x (remove empty? sets)]
+    (if (empty? x)
+      nil
+      (if (not= (count diff) 1)
+        nil
+        s))))
 
 (defn get-common-letters
   []
   (loop
-    [acc `()
-     l practice]
-    (if (not (empty? l))
-      (apply str (clojure.set/intersection (set (first acc)) (set (second acc))))
-      (recur (compare-letters (first l) (rest l)) (rest l)))))
+    [l processed]
+    (let [t (compare-letters (first l) (rest l))]
+      (if (not (nil? t))
+        t
+        (recur (rest l))))))
 
 
