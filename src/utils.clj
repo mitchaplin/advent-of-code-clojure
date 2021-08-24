@@ -44,3 +44,7 @@
 (defn number-sort
   [mylist]
   (apply <= mylist))
+
+(defn multiple?
+  [x & factors]
+  (some zero? (map #(rem x %) factors)))

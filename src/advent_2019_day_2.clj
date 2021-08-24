@@ -5,11 +5,16 @@
 (def processed (mapv #(Integer/parseInt %)
                      (str/split (str/trim-newline raw) #",")))
 
-(defn determine-op [num] (if (= num 1) + *))
+(defn determine-op
+  [num]
+  (if (= num 1)
+    +
+    *))
 
 (defn grav-assist
   [input]
-  (first (loop [iter 0 arr input]
+  (first (loop [iter 0
+                arr input]
            (if (or (> iter (- (count arr) 1)) (= (get (subvec arr (+ iter 0) (+ iter 1)) 0) 99))
              arr
              (recur (+ iter 4)
@@ -24,7 +29,6 @@
     (if (= output 19690720)
       inp
       (do
-        (println noun verb output)
         (if (>= verb 100)
           (recur (inc noun) 0 (grav-assist inp) (assoc inp 1 noun))
           (recur noun (inc verb) (grav-assist inp) (assoc inp 2 verb)))))))

@@ -1,26 +1,29 @@
 (ns advent_2019_day_1
   (:require [clojure.string :as str]))
 
-(def raw (slurp "resources/day_1.txt"))
-(def processed (mapv #(Integer/parseInt %)
-                     (str/split (str/trim-newline raw) #",")))
+(def raw (slurp "resources/2019/day_1.txt"))
+(def processed
+  (->> raw
+       (str/split-lines)
+       (map #(Integer/parseInt %))))
+
+(defn calc_fuel
+  [mass]
+  (- (quot mass 3) 2))
 
 (defn calc_one_mass
   [masses]
-  (reduce +
-          (map #(int (- (Math/floor (/ % 3)) 2))
-               masses)))
-
-(defn calc_mass
-  [mass]
-  (int (- (Math/floor (/ mass 3)) 2)))
+  (reduce + (map calc_fuel
+                 masses)))
 
 (defn total_mass
   [masses]
-  (reduce + (flatten (map #(loop
-                             [acc [%]]
-                             (if (<= (calc_mass (last acc)) 0)
-                               (rest acc)
-                               (recur (conj acc (if (< (calc_mass (last acc)) 0) 0 (calc_mass (last acc))))))) masses))))
+  (reduce + (map #(loop
+                    [acc [%]]
+                    (if (not (nat-int? (calc_fuel (last acc))))
+                      (reduce + (rest (butlast acc)))
+                      (recur (conj acc (calc_fuel (last acc))))))
+                 masses)))
+
 
 
