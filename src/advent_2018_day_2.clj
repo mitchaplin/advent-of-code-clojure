@@ -1,9 +1,7 @@
 (ns advent-2018-day-2
   (:require [clojure.string :as str]
-            [clojure.math.combinatorics :as comb]))
-
-(def practice
-  ["fghij" "abcde" "klmno" "pqrst" "fguij" "axcye" "wvxyz"])
+            [clojure.math.combinatorics :as comb]
+            [clojure.math.combinatorics :as combo]))
 
 (def raw (slurp "resources/2018/day_2.txt"))
 (def processed (str/split-lines raw))
@@ -32,26 +30,28 @@
              (rest l)))))
 
 ;PART 2 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+(defn calc-match
+  [a b]
+  (if (= a b) a ""))
+
 (defn compare-letters
-  [s r]
-  (let [sets (map #(clojure.set/intersection (set (sort s))
-                                             (set (sort %))) r)
-        diff (apply str (first (map #(clojure.set/difference (set (sort s))
-                                                             (set (sort %))) r)))
-        x (remove empty? sets)]
-    (if (empty? x)
-      nil
-      (if (not= (count diff) 1)
-        nil
-        s))))
+  [letter current]
+  (loop
+    [matches ""
+     t current
+     l letter]
+    (if (empty? l)
+      matches
+      (recur
+        (str matches (calc-match (first t)
+                                 (first l)))
+        (rest t)
+        (rest l)))))
 
 (defn get-common-letters
   []
-  (loop
-    [l processed]
-    (let [t (compare-letters (first l) (rest l))]
-      (if (not (nil? t))
-        t
-        (recur (rest l))))))
+  (let [x (combo/combinations processed 2)]
+    (last (sort-by count (map #(compare-letters (first %) (second %)) x)))))
+
 
 

@@ -1,3 +1,6 @@
+(ns advent_2019_day_4
+  (:require [clojure.string :as str]))
+
 (def passwords (range 172851 675869))
 
 (defn digits [n]
@@ -8,14 +11,15 @@
       result)))
 
 (defn filter-passwords [pw]
-    (filter (fn [pass]
-              (apply <= (digits pass)))
-            (filter #(<
-                       (count
-                         (->> (digits %)
-                              (partition-by identity)
-                              (remove next)
-                              (map first))) 6) pw)))
+  (filter (fn [pass]
+            (apply <= (digits pass)))
+          (filter #(< (count
+                        (->> (digits %)
+                             (partition-by identity)
+                             (remove next)
+                             (map first)))
+                      6)
+                  pw)))
 
 
 (defn partition-passwords
