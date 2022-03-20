@@ -35,7 +35,7 @@
            (= (val (first v)) (val (second v))))
     \0
     (if (and (= f >)
-           (= (val (first v)) (val (second v))))
+             (= (val (first v)) (val (second v))))
       \1
       (if (f (val (first v)) (val (second v)))
         (ffirst v)
@@ -64,3 +64,48 @@
   (*
     (Long/parseLong (first (p2 >)) 2)
     (Long/parseLong (first (p2 <)) 2)))
+
+;(def raw (slurp "resources/2021/day_3_practice.txt"))
+;(def processed (str/split-lines raw))
+;
+;(defn collect-items
+;  [idx]
+;  (map #(get % idx) processed))
+;
+;(defn start-stuff
+;  []
+;  (loop [idx 0
+;         new-coll []]
+;    (if (< 4 idx)
+;      new-coll
+;      (recur (inc idx)
+;             (conj new-coll (collect-items idx))))))
+;
+;(defn testtest
+;  []
+;  (* (Integer/parseInt (apply str (map first (map #(if (< (second (second %)) (second (first %))) (first %) (second %)) (start-stuff)))) 2)
+;     (Integer/parseInt (apply str (map first (map #(if (> (second (second %)) (second (first %))) (first %) (second %)) (start-stuff)))) 2)))
+;
+;;PART 2 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+;(defn collect-items-2
+;  [idx x]
+;  (map #(get % idx) x))
+;
+;(defn start-stuff
+;  [x]
+;  (loop [idx 1
+;         new-coll []
+;         t x]
+;    (if (< 4 idx)
+;      new-coll
+;      (recur (inc idx)
+;             (conj new-coll (collect-items-2 idx t))
+;             t))))
+;
+;(defn determine-co2-rating
+;  [t]
+;  (first (map #(if (> (second (second (frequencies %))) (second (first (frequencies %)))) 1 0) (start-stuff t))))
+;
+;(defn xyz
+;  [p]
+;  (remove empty? (map #(if (= (Integer/parseInt (str (first %))) (determine-co2-rating p)) % "") p)))

@@ -55,5 +55,3 @@
 (defn cycle-data
   []
   (apply * (map count (map parse-combos (sad processed)))))
-
-

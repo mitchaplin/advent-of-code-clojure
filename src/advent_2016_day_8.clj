@@ -4,7 +4,7 @@
 (def raw (slurp "resources/2016/day_8_practice.txt"))
 (def processed (map #(str/split % #" ") (str/split-lines raw)))
 
-;PART 1 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 (defn rotate
   [i]
   (println "ROTO" i))

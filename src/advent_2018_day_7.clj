@@ -1,7 +1,7 @@
 (ns advent_2018_day_7
   (:require [clojure.string :as str]))
 
-(def raw (slurp "resources/2018/day_7.txt"))
+(def raw (slurp "resources/2018/day_7.edn"))
 (def processed (str/split-lines raw))
 
 (defn add-duration
