@@ -13,7 +13,7 @@
                                    (partition 2 1 processed))))))
 
 ;PART 2 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-(defn check-idk
+(defn check-is-subset
   [coll f l]
   (clojure.set/subset? #{f l} (set coll)))
 
@@ -26,7 +26,7 @@
   [line f l]
   (let [c (combo/subsets line)
         clean (remove #(< (count %) 2) c)
-        valid (filter #(and (check-idk % f l) (part-one-works? %)) clean)]
+        valid (filter #(and (check-is-subset % f l) (part-one-works? %)) clean)]
     valid))
 
 (defn parse-combos
@@ -41,7 +41,7 @@
           :else
           (check-combos line f l))))
 
-(defn sad
+(defn run
   [d]
   (reduce
     (fn [acc n]
@@ -54,4 +54,4 @@
 
 (defn cycle-data
   []
-  (apply * (map count (map parse-combos (sad processed)))))
+  (apply * (map count (map parse-combos (run processed)))))

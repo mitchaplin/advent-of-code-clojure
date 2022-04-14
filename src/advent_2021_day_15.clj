@@ -39,17 +39,17 @@
        (inc %))
     numlist))
 
-(defn do-it
+(defn update-board
   [dataset]
   (map #(list (concat (first %) (update-if-needed (second %))) (update-if-needed (second %))) dataset))
 
-(defn do-it-2
+(defn update-board-2
   []
-  (map first (nth (iterate do-it processed-2) 4)))
+  (map first (nth (iterate update-board processed-2) 4)))
 
 (defn generate-board
   []
-  (let [x (do-it-2)
+  (let [x (update-board-2)
         a (concat x (map #(update-if-needed %) (take-last 100 x)))
         a (concat a (map #(update-if-needed %) (take-last 100 a)))
         a (concat a (map #(update-if-needed %) (take-last 100 a)))
@@ -76,5 +76,3 @@
       (when (not (>= (inc y) y-max-2))
         (nth (nth board (inc y)) x))}}
     direct-graph))
-
-;(utils/dijkstra (reduce add-point-to-directed-graph-2 {} (generate-graph-points-2)) [0 0] [499 499])

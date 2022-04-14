@@ -67,7 +67,7 @@
         t (map #(Integer/parseInt (str (last (str (get inv-map (apply str (sort %))))))) item)]
     t))
 
-(defn run-stuff
+(defn run
   []
   (loop
     [p processed

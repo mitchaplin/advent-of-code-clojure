@@ -31,7 +31,7 @@
 
 ;PART 1 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-(defn xyz
+(defn run
   []
   (->> (ffirst processed)
     (iterate build-polymer)
@@ -39,9 +39,9 @@
     last
     frequencies))
 
-(defn idkxyz
+(defn p1
   []
-  (- (apply max (vals (xyz))) (apply min (vals (xyz)))))
+  (- (apply max (vals (run))) (apply min (vals (run)))))
 
 ;PART 2 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 (defn expand-polymer
@@ -65,7 +65,7 @@
                  (merge-with + freq {found amount})
                  (merge-with + acc next-polymer-freq)))))))
 
-(defn idkxyz-2
+(defn p2
   []
   (let [v (second (first (->> (iterate get-polymer-frequencies [(frequencies (map #(apply str %)
                                                                                   (partition 2 1 "PPFCHPFNCKOKOSBVCFPP")))

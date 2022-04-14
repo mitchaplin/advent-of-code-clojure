@@ -7,8 +7,6 @@
 (def top-pad (vec (cons processed (repeat (count (first processed)) nil))))
 (def padded (partition 3 1 (vec (conj top-pad (vector (repeat (count (first top-pad)) nil))))))
 
-
-
 (defn pluck-height-from-map
   [x y part]
   (list
@@ -34,7 +32,6 @@
 
         (get y (get part x)))))) ;; middle
 
-  
 (defn tally-results
   [results]
   (map #(if (> (apply min (butlast %)) (last %))

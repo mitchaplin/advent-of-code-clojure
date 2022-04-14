@@ -108,9 +108,6 @@
                                                \U (if (= (get-in b (take-step direction pointer)) ".") "|" (if (= (second b) 1) "|" "@"))
                                                \D (if (= (get-in b (take-step direction pointer)) ".") "|" (if (= (second b) 1) "|" "@"))))
 
-
-;(def board (gen-board (determine-width) (determine-height) (constantly ".")))
-
 (def board (gen-board 25 25 (constantly ".")))
 (defn trace-wires [board input] (loop [data input
                                        pointer [10 10]

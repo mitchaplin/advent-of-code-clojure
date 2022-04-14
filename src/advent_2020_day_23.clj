@@ -13,8 +13,6 @@
  :4 :3
  :3 :7}
 
-;; generate this on the fly?
-
 (defn generate-map-linked-list
   [padding]
   ;(range 10 51)

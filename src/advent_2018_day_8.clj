@@ -15,7 +15,7 @@
     (let [elements (partition-all (quot (count col) n) col)]
       (concat (drop-last 2 elements) (vector (apply concat (take-last 2 elements)))))))
 
-(defn some-name
+(defn coerce-data
   [c]
   (when-not
     (empty? c)
@@ -24,13 +24,13 @@
         (list nil [] [])
         (list (ffirst x) (nthrest (first x) 2) (second x))))))
 
-(defn idk-name
+(defn p2
   [c]
-  (let [c (some-name c)]
+  (let [c (coerce-data c)]
     (loop [acc []
            new-items (partition-keep-remainder (first c) (second c))]
       (if (or (empty? new-items) (nil? (first c)))
         acc
         (recur
           (concat acc (last c))
-          (map idk-name new-items))))))
+          (map p2 new-items))))))

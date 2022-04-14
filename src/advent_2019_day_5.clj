@@ -38,20 +38,3 @@
 (defn check-mode
   [inst]
   (Integer/parseInt (str/join (first inst))))
-
-
-;mode 1 op 02 inst full
-;1002,4,3,4,33
-;; halt cond 3,0,4,0,99
-
-;;3,50 put 3 at 50?
-;;4,50 output the value at address 50
-
-;(cons (reverse (list (last (take-nth (- (count '(1 0 0 2)) 1) '(1 0 0 2))) (last (take-nth (- (count '(1 0 0 2)) 2) '(1 0 0 2))))) '(4 3 4 3))
-;(str/join (nthrest '(1 0 0 2) (- (count '(1 0 0 2)) 2)))
-
-;Parameters that an instruction writes to will never be in immediate mode. ???
-
-;what does 3,50 actually do?
-
-;what are we outputting
