@@ -1,54 +1,49 @@
 (ns aoc2018.day_4
   (:require [clojure.string :as str]))
 
-(def raw (slurp "resources/2018/day_4_practice.txt"))
+(def raw (slurp "resources/2018/day_4.txt"))
 (def processed (sort (map #(conj [] (subs % 1 17) (subs % 19)) (str/split-lines raw))))
 
-;; guard here needs to be a key
-(defn update-timesheet
-  [guard time timesheet]
-  ;; check if key exists, if not add it
-  ;;otherwise, update the existing key
-  (update timesheet :123 (constantly (+ (get timesheet guard) time))))
+(defn get-current-guard
+  [cg line]
+  (let [parsed (str/split (second line) #" ")]
+    (if (utils/in? parsed "Guard") (apply str (rest (second parsed))) cg)))
 
-(defn calc-time
-  [current-guard time])
+;; ["1518-11-01 00:00" "Guard #10 begins shift"]
+;; ["1518-11-01 00:05" "falls asleep"]
+;; ["1518-11-05 00:55" "wakes up"]
 
-;; [:123 "awake"]
-(defn update-guard-status
-  [current-guard-status inst]
-  (cond (= (first inst) \#)
-        [(apply str (rest inst)) "awake"]
-
-        (= inst "falls")
-        [(first current-guard-status) "asleep"]
-
-        (= inst "wakes")
-        [(first current-guard-status) "awake"]))
-
-;; "Guard #1663 begins shift"
 (defn calculate-next-instruction
-  [s]
-  (let
-    [i (str/split s #" ")]
-    (if (= (first i) "Guard")
-      (second i)
-      (first i))))
+  [cg line timesheet]
+  (let [parsed (str/split (second line) #" ")
+        time (Integer/parseInt (second (str/split (first line) #":")))
+        action (first parsed)]
+    (cond (= action "falls")
+          (conj timesheet [cg time])
+
+          (= action "wakes")
+          (apply merge timesheet (map #(list cg %) (rest (range (last (last timesheet)) time))))
+
+          :else
+          timesheet)))
+
+;"10"
 
 (defn p1
-  []
+  [processed]
   (loop
-    [current-guard-status ["2459" "awake"]
-     timesheet {}
-     instructions processed]
+    [instructions processed
+     current-guard "2459"
+     timesheet (calculate-next-instruction current-guard (first instructions) [])]
     (if (empty? instructions)
       timesheet
-      (let [cg (first (keyword current-guard-status))
-            instruction (first instructions)
-            inst (calculate-next-instruction (second instruction))
-            ngs (update-guard-status current-guard-status inst)]
-        (recur ngs
-              (update-timesheet cg (calc-time cg (get timesheet cg)) timesheet)
-              (rest instructions))))))
+        (recur (rest instructions)
+               (get-current-guard current-guard (first instructions))
+               (calculate-next-instruction current-guard (first instructions) timesheet)))))
+
+(def result (ffirst (second (first (group-by second (map #(vector (ffirst %) (count %)) (map second (group-by first (p1 processed)))))))))
+(def result2 (last (sort-by val  (frequencies (filter #(= (first %) result) (p1 processed))))))
+(def answer (* (Integer/parseInt (ffirst result2)) (second (first result2))))
+(println answer)
 
 
