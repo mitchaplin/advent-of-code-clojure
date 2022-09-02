@@ -4,14 +4,27 @@
 (def raw (slurp "resources/2015/day_1.txt"))
 (def processed (str/split raw #""))
 
-(defn calculate-frequencies [item-list]
-  (- (or (second (first (frequencies item-list))) 0) (or (second (second (frequencies item-list))) 0)))
+;PART 1 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+(defn calculate-frequencies
+  [item-list]
+  (let [[down up] (into `() (frequencies item-list))]
+    (- (second up) (second down))))
 
-(def starting-list (nthrest processed 5))
+;PART 2 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+(defn update-tally
+  [item]
+  (cond (= item "(")
+        inc
+        (= item ")")
+        dec))
 
-(loop [position 5 input starting-list current ["(" "(" "(" "(" ")"]]
-  (if (< (calculate-frequencies current) 0)
-    (count current)
-    (do
-      (println (calculate-frequencies current) position input current)
-      (recur (inc position) (rest input) (conj current (first input))))))
+(defn find-first-basement
+  [item-list]
+  (loop [total 0
+         idx 0
+         l item-list]
+    (if (< total 0)
+      idx
+      (recur ((update-tally (nth l idx)) total)
+             (inc idx)
+             l))))
