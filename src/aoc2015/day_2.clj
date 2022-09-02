@@ -5,64 +5,25 @@
 (def processed (str/split-lines raw))
 
 (defn format-input
-  [processed]
- (map #(conj (vec (map (fn [x] (Integer/parseInt x)) (str/split % #"x"))) (Integer/parseInt (first (str/split % #"x")))) processed))
+  [input]
+  (map (fn [x] (sort (map #(Integer/parseInt %) x))) (map #(str/split % #"x") input)))
 
-(defn determine-min
+;PART 1 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+(defn calc-prism-total
+  [[a b c]]
+  (let [combos (map #(reduce * %) [[a b] [b c] [a c]])
+        multiplied (map #(* 2 %) combos)]
+    (+ (reduce * (take 2 [a b c])) (reduce + multiplied))))
+
+(defn p1
+  [list]
+  (reduce + (map #(calc-prism-total %) list)))
+
+;PART 2 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+(defn calculate-individual-total
   [present]
-  (loop [p present acc []]
-    (if (<= (count p) 1)
-      (apply min acc)
-      (do
-        (recur (rest p)
-               (conj acc (* (first p) (second p))))))))
+  (+ (* (reduce + (take 2 present)) 2) (reduce * present)))
 
-(defn calc-present-total
-  [present]
-  (reduce + (conj (loop
-                    [p present
-                     acc []]
-                    (if (<= (count p) 1)
-                      (conj acc (determine-min present))
-                      (recur (rest p)
-                             (conj acc (* (* (first p) (second p)) 2))))))))
-
-(defn calc-overall-total
-  []
-  (reduce + (loop
-              [remaining (format-input processed)
-               acc []]
-              (if (empty? remaining)
-                acc
-                (do
-                    (println acc)
-                    (recur (rest remaining)
-                           (conj acc (calc-present-total (first remaining)))))))))
-
-(defn determine-and-calc-present-mins
-  [present]
-  (+ (reduce + (flatten (map (fn [x]
-                               (repeat 2 x))
-                             (remove #(= (apply max (drop-last present)) %)
-                                     (drop-last present))))) (apply * (drop-last present))))
-
-(defn calc-square
-  [[l w h]]
-  (let
-    [ [f s] (sort (list l w h))
-     ribbon (* l w h)]
-    (+ (+ f f) (+ s s) ribbon)))
-
-(defn calc-efficient-present-total
-  [processed]
-  (reduce +
-          (loop
-            [remaining (format-input processed)
-             acc []]
-            (if (empty? remaining)
-              acc
-              (do
-                (println acc (reduce + acc) remaining)
-                (recur (rest remaining)
-                       (conj acc (determine-and-calc-present-mins (first remaining)))))))))
-
+(defn p2
+  [list]
+  (reduce + (map #(calculate-individual-total %) list)))
