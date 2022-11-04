@@ -46,7 +46,10 @@
      position [0 0]
      position-list [[]]]
     (if (empty? instructions)
-      (apply min (set (map (fn [x]  (+ (Math/abs (ffirst x)) (Math/abs (second (first x))))) (remove #(= (second %) 1) (frequencies (partition 2 (flatten (rest position-list))))))))
+      (apply min (set (map (fn [x]  (+ (Math/abs (ffirst x))
+                                       (Math/abs (second (first x)))))
+                           (remove #(= (second %) 1)
+                                   (frequencies (partition 2 (flatten (rest position-list))))))))
       (let [new-instructions (rest instructions)
             new-dir (calculate-new-direction dir (ffirst instructions))
             new-pos (determine-position position (second (first instructions)) new-dir)
