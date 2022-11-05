@@ -1,5 +1,6 @@
 (ns aoc2018.day_4
-  (:require [clojure.string :as str]))
+  (:require [clojure.string :as str]
+            [utils :as utils]))
 
 (def raw (slurp "resources/2018/day_4.txt"))
 (def processed (sort (map #(conj [] (subs % 1 17) (subs % 19)) (str/split-lines raw))))
@@ -8,10 +9,6 @@
   [cg line]
   (let [parsed (str/split (second line) #" ")]
     (if (utils/in? parsed "Guard") (apply str (rest (second parsed))) cg)))
-
-;; ["1518-11-01 00:00" "Guard #10 begins shift"]
-;; ["1518-11-01 00:05" "falls asleep"]
-;; ["1518-11-05 00:55" "wakes up"]
 
 (defn calculate-next-instruction
   [cg line timesheet]
@@ -27,9 +24,7 @@
           :else
           timesheet)))
 
-;"10"
-
-(defn p1
+(defn build-timesheet
   [processed]
   (loop
     [instructions processed
@@ -41,9 +36,16 @@
                (get-current-guard current-guard (first instructions))
                (calculate-next-instruction current-guard (first instructions) timesheet)))))
 
-(def result (ffirst (second (first (group-by second (map #(vector (ffirst %) (count %)) (map second (group-by first (p1 processed)))))))))
-(def result2 (last (sort-by val  (frequencies (filter #(= (first %) result) (p1 processed))))))
-(def answer (* (Integer/parseInt (ffirst result2)) (second (first result2))))
-(println answer)
+(def full-timesheet (build-timesheet processed))
+(def result (first (last (sort-by second (frequencies (map first full-timesheet))))))
+(def result2 (last (sort-by val (frequencies (filter #(= (first %) result) full-timesheet)))))
 
+(defn p1
+  []
+  (* (Integer/parseInt (ffirst result2)) (second (first result2))))
+
+(defn p2
+  []
+  (let [[a b] (first (last (sort-by second (frequencies (map reverse full-timesheet)))))]
+    (* a (Integer/parseInt b))))
 
