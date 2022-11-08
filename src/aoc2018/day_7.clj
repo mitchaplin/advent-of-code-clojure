@@ -1,12 +1,10 @@
 (ns aoc2018.day_7
   (:require [clojure.string :as str]))
 
-(def raw (slurp "resources/2018/day_7.edn"))
+(def raw (slurp "resources/2018/day_7.txt"))
 (def processed (str/split-lines raw))
 
-(defn add-duration
-  [letter]
-  (+ 60 (inc (.indexOf (map str/upper-case (map char (range 97 123))) letter))))
+;PART 1 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 (defn line-to-pair
   [line]
@@ -27,6 +25,41 @@
   (reduce (fn [ret [dep key]]
             (update ret key conj dep))
           (setup-graph pairs) pairs))
+
+(defn remove-step
+  [graph step]
+  (let [graph (dissoc graph step)]
+    (reduce (fn [ret key]
+              (update ret key disj step))
+            graph (keys graph))))
+
+(defn find-next-step
+  [graph]
+  (let [sortable (sort #(compare (first %1) (first %2))
+                       (map #(list (first %) (count (last %))) graph))]
+    (ffirst (sort #(compare (last %1) (last %2)) sortable))))
+
+(defn find-step-order
+  [graph]
+  (loop [g graph steps ()]
+    (cond
+      (empty? g) (apply str (reverse steps))
+      :else
+      (let [step (find-next-step g)]
+        (recur (remove-step g step) (cons step steps))))))
+
+(defn part-1
+  []
+  (->> processed
+       (lines-to-pairs)
+       (create-graph)
+       (find-step-order)))
+
+;PART 2 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+(defn add-duration
+  [letter]
+  (+ 60 (inc (.indexOf (map str/upper-case (map char (range 97 123))) letter))))
 
 (defn initialize-worker-status
   []
@@ -73,20 +106,13 @@
           (rest tl)
           (assoc ws (ffirst idle-workers) {:letter (first tl) :duration (add-duration (first tl))}))))))
 
-(defn remove-step
-  [graph step]
-  (let [graph (dissoc graph step)]
-    (reduce (fn [ret key]
-              (update ret key disj step))
-            graph (keys graph))))
-
-(defn find-next-step
+(defn find-next-step-2
   [graph]
   (let [sortable (sort #(compare (first %1) (first %2))
                        (map #(list (first %) (count (last %))) graph))]
     (sort #(compare (last %1) (last %2)) sortable)))
 
-(defn find-step-order
+(defn find-step-order-2
   [graph]
   (loop [g graph
          steps ()
@@ -97,7 +123,7 @@
       (apply str (reverse steps))
 
       :else
-      (let [available-steps (sort (map first (keep #(when (zero? (second %)) %) (find-next-step g))))
+      (let [available-steps (sort (map first (keep #(when (zero? (second %)) %) (find-next-step-2 g))))
             updated-workers (assign-task-to-worker-on-tick available-steps ws)
             next-steps (sorted-set (concat (first updated-workers) available-steps))
             tick (inc tick)
@@ -111,16 +137,9 @@
                                 (rest rs))))]
         (recur updated-graph next-steps tick (second updated-workers))))))
 
-(defn part-1
-  []
-  (->> processed
-       (lines-to-pairs)
-       (create-graph)
-       (find-step-order)))
-
 (defn part-2
   []
   (->> processed
        (lines-to-pairs)
        (create-graph)
-       (find-step-order)))
+       (find-step-order-2)))
