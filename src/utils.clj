@@ -1,7 +1,8 @@
 (ns utils
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [clojure.string :as str])
+            [clojure.string :as str]
+            [clojure.math.combinatorics :as combo])
   (:import (java.io PushbackReader)))
 
 (defn in?
@@ -14,7 +15,6 @@
 (defn load-edn
   [resource-file]
   (edn/read (PushbackReader. (io/reader (io/resource resource-file)))))
-
 
 ; fnil inc into map, add it if key does not exist without null pointer exception
 ; (update {} :a inc)
@@ -92,17 +92,10 @@
           curr src
           unvisited (disj (apply hash-set (keys g)) src)]
      (cond
-      (= curr dst)
-      (select-keys costs [dst])
+       (= curr dst)
+       (select-keys costs [dst])
 
-      (or (empty? unvisited) (= inf (get costs curr)))
-      costs
-
-      :else
-      (let [next-costs (update-costs g costs unvisited curr)
-            next-node (apply min-key next-costs unvisited)]
-        (recur next-costs next-node (disj unvisited next-node)))))))
-
+       (or (empty? unvisited) (= inf (get costs curr))) costs :else (let [next-costs (update-costs g costs unvisited curr) next-node (apply min-key next-costs unvisited)] (recur next-costs next-node (disj unvisited next-node)))))))
 (defn mean [coll]
   (let [sum (apply + coll)
         count (count coll)]
@@ -120,3 +113,12 @@
             bottom-val (nth sorted bottom)
             top-val (nth sorted halfway)]
         (mean [bottom-val top-val])))))
+
+(defn points-around [point]
+  (remove (fn [p] (= point p))
+          (apply combo/cartesian-product
+                 (map #(range (dec %) (+ 2 %)) point))))
+
+(defn points-around-inclusive [point]
+  (sort-by second (apply combo/cartesian-product
+                         (map #(range (dec %) (+ 2 %)) point))))

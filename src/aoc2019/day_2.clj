@@ -1,35 +1,65 @@
 (ns aoc2019.day_2
   (:require [clojure.string :as str]))
 
-(def raw (slurp "resources/2019/day_2.txt"))
-(def processed (mapv #(Integer/parseInt %)
-                     (str/split (str/trim-newline raw) #",")))
+(def processed
+  (->> "resources/2019/day_2.txt"
+       (slurp)
+       (re-seq #"\d+")
+       (map #(Integer/parseInt %))
+       (vec)))
 
-(defn determine-op
-  [num]
-  (if (= num 1)
-    +
-    *))
+;PART 1 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-(defn grav-assist
-  [input]
-  (first (loop [iter 0
-                arr input]
-           (if (or (> iter (- (count arr) 1)) (= (get (subvec arr (+ iter 0) (+ iter 1)) 0) 99))
-             arr
-             (recur (+ iter 4)
-                    (assoc arr (get arr (+ iter 3) 0)
-                               ((determine-op (get arr iter))
-                                (get arr (first (subvec arr (+ iter 1) (+ iter 2))))
-                                (get arr (first (subvec arr (+ iter 2) (+ iter 3)))))))))))
+(defn execute-add
+  [ops pc]
+  (let [op1 (ops (inc pc))
+        op2 (ops (+ pc 2))
+        dst (ops (+ pc 3))
+        sum (+ (ops op1) (ops op2))]
+    (assoc ops dst sum)))
 
-(defn determine-input
-  [input grav-assist]
-  (loop [noun 0 verb 0 output 0 inp input]
-    (if (= output 19690720)
-      inp
-      (do
-        (if (>= verb 100)
-          (recur (inc noun) 0 (grav-assist inp) (assoc inp 1 noun))
-          (recur noun (inc verb) (grav-assist inp) (assoc inp 2 verb)))))))
+(defn execute-multiply
+  [ops pc]
+  (let [op1 (ops (inc pc))
+        op2 (ops (+ pc 2))
+        dst (ops (+ pc 3))
+        prd (* (ops op1) (ops op2))]
+    (assoc ops dst prd)))
 
+(defn execute-ops
+  [noun verb opcodes]
+  (let [opcodes (assoc opcodes 1 noun 2 verb)]
+    (loop [opcodes opcodes
+           pc 0]
+      (cond
+        (= (opcodes pc) 99)
+        (opcodes 0)
+
+        (= (opcodes pc) 1)
+        (recur (execute-add opcodes pc)
+               (+ pc 4))
+
+        (= (opcodes pc) 2)
+        (recur (execute-multiply opcodes pc)
+               (+ pc 4))))))
+
+(defn part-1
+  []
+  (->> processed
+       (execute-ops 12 2)))
+
+;PART 2 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+(defn compute-result
+  [v opcodes]
+  (loop [noun 0
+         verb 0]
+    (let [result (execute-ops noun verb opcodes)]
+      (cond
+        (= result v) (+ (* 100 noun) verb)
+        (< verb 99)  (recur noun (inc verb))
+        (< noun 99)  (recur (inc noun) 0)))))
+
+(defn part-2
+  []
+  (->> processed
+       (compute-result 19690720)))
