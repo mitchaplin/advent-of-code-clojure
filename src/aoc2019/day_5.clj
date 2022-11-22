@@ -1,40 +1,92 @@
 (ns aoc2019.day_5
-  (:require [clojure.string :as str]))
+  (:require
+    [clojure.string :as str]
+    [clojure.core.async :as async :refer [thread chan >! <! >!! <!! go]]))
 
-(def raw (slurp "resources/day_2.txt"))
-(def processed (mapv #(Integer/parseInt %)
-                     (str/split (str/trim-newline raw) #",")))
+(def processed
+  (->> "resources/2019/day_2.txt"
+       (slurp)
+       (re-seq #"\d+")
+       (map #(Integer/parseInt %))
+       (vec)))
 
-(defn determine-op [num] (if (= num 1) + *))
+;PART 1 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-(defn grav-assist
-  [input]
-  (first (loop [iter 0 arr input]
-           (if (or (> iter (- (count arr) 1)) (= (get (subvec arr (+ iter 0) (+ iter 1)) 0) 99))
-             arr
-             (recur (+ iter 4)
-                    (assoc arr (get arr (+ iter 3) 0)
-                               ((determine-op (get arr iter))
-                                (get arr (first (subvec arr (+ iter 1) (+ iter 2))))
-                                (get arr (first (subvec arr (+ iter 2) (+ iter 3)))))))))))
+(defn execute-add
+  [ops pc]
+  (let [op1 (ops (inc pc))
+        op2 (ops (+ pc 2))
+        offset (ops (+ pc 3))
+        sum (+ (ops op1) (ops op2))]
+    (assoc ops offset sum)))
 
-(defn determine-input
-  [input grav-assist]
-  (loop [noun 0 verb 0 output 0 inp input]
-    (if (= output 19690720)
-      inp
-      (do
-        (println noun verb output)
-        (if (>= verb 100)
-          (recur (inc noun) 0 (grav-assist inp) (assoc inp 1 noun))
-          (recur noun (inc verb) (grav-assist inp) (assoc inp 2 verb)))))))
+(defn execute-multiply
+  [ops pc]
+  (let [op1 (ops (inc pc))
+        op2 (ops (+ pc 2))
+        offset (ops (+ pc 3))
+        prd (* (ops op1) (ops op2))]
+    (assoc ops offset prd)))
 
-(defn formatted-inst [inst] (cons (map #(Integer/parseInt %) (str/split (first (cons (format "%05d" (check-mode inst)) (rest inst))) #"")) (rest inst)))
+;; TODO: overwrite
+(defn execute-overwrite
+  [ops pc idx]
+  (let [op1 (ops (inc pc))
+        op2 (ops (+ pc 2))
+        offset (ops (+ pc 3))
+        prd (* (ops op1) (ops op2))]
+    (assoc ops offset prd)))
 
-(defn check-op
-  [inst]
-  (str/join (nthrest (first (formatted-inst inst)) (- (count (first (formatted-inst inst))) 2)))) ;"01"
+(defn execute-lookup
+  [ops pc out]
+  (thread (>!! out (ops pc)))
+  ops)
 
-(defn check-mode
-  [inst]
-  (Integer/parseInt (str/join (first inst))))
+;; TODO: make sure pc values are correct
+(defn execute-ops
+  [noun verb opcodes in out]
+  (let [opcodes (assoc opcodes 1 noun 2 verb)]
+    (loop [opcodes opcodes
+           pc 0]
+      (println opcodes)
+      (cond
+        (= (opcodes pc) 99)
+        (opcodes 0)
+
+        (= (opcodes pc) 1)
+        (recur (execute-add opcodes pc)
+               (+ pc 4))
+
+        (= (opcodes pc) 2)
+        (recur (execute-multiply opcodes pc)
+               (+ pc 4))
+
+        (= (opcodes pc) 3)
+        (recur (execute-overwrite opcodes pc in)
+               (+ pc 2))
+
+        (= (opcodes pc) 4)
+        (recur (execute-lookup opcodes pc out)
+               (+ pc 2))))))
+
+(defn compute-result
+  [opcodes]
+  (let [input (chan)
+        output (chan)]
+    (thread (>!! input 1))
+    (loop [noun 0
+           verb 0]
+      (println "test2")
+      (let [result (execute-ops noun verb opcodes input output)
+            out (thread (<!! output))]
+        (cond
+          (not (nil? out)) out
+          (< verb 99)  (recur noun (inc verb))
+          (< noun 99)  (recur (inc noun) 0))))))
+
+(defn part-1
+  []
+  (->> processed
+       (compute-result)))
+
+;PART 2 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

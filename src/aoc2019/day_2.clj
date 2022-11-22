@@ -1,5 +1,6 @@
 (ns aoc2019.day_2
-  (:require [clojure.string :as str]))
+  (:require [clojure.string :as str]
+            [utils :as utils]))
 
 (def processed
   (->> "resources/2019/day_2.txt"
@@ -14,17 +15,17 @@
   [ops pc]
   (let [op1 (ops (inc pc))
         op2 (ops (+ pc 2))
-        dst (ops (+ pc 3))
+        offset (ops (+ pc 3))
         sum (+ (ops op1) (ops op2))]
-    (assoc ops dst sum)))
+    (assoc ops offset sum)))
 
 (defn execute-multiply
   [ops pc]
   (let [op1 (ops (inc pc))
         op2 (ops (+ pc 2))
-        dst (ops (+ pc 3))
+        offset (ops (+ pc 3))
         prd (* (ops op1) (ops op2))]
-    (assoc ops dst prd)))
+    (assoc ops offset prd)))
 
 (defn execute-ops
   [noun verb opcodes]

@@ -36,6 +36,10 @@
 
 (defn char->int [c] (- (int c) 48))
 
+(defn string-is-number?
+  [s]
+  (every? #(Character/isDigit %) s))
+
 (defn update-values
   [m f & args]
   (reduce (fn [r [k v]] (assoc r k (apply f v args))) {} m))
@@ -114,11 +118,15 @@
             top-val (nth sorted halfway)]
         (mean [bottom-val top-val])))))
 
-(defn points-around [point]
-  (remove (fn [p] (= point p))
-          (apply combo/cartesian-product
-                 (map #(range (dec %) (+ 2 %)) point))))
+(defn points-around
+  ([point]
+   (points-around point identity))
+  ([point filter-fn]
+   (->> point
+        (map #(range (dec %) (+ 2 %)))
+        (apply combo/cartesian-product)
+        (filter filter-fn))))
 
-(defn points-around-inclusive [point]
-  (sort-by second (apply combo/cartesian-product
-                         (map #(range (dec %) (+ 2 %)) point))))
+(defn exclusive-points-around
+  [point]
+  (points-around point (fn [x] (not= x point))))
