@@ -106,6 +106,7 @@
         (recur next-iter
                (update-wire-map wire-map value to))))))
 
+;PART 1 & 2 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 (defn part-1
   []
   (loop [wire-map {}]

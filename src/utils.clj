@@ -99,7 +99,12 @@
        (= curr dst)
        (select-keys costs [dst])
 
-       (or (empty? unvisited) (= inf (get costs curr))) costs :else (let [next-costs (update-costs g costs unvisited curr) next-node (apply min-key next-costs unvisited)] (recur next-costs next-node (disj unvisited next-node)))))))
+       (or (empty? unvisited) (= inf (get costs curr))) nil :else (let [next-costs (update-costs g costs unvisited curr) next-node (apply min-key next-costs unvisited)] (recur next-costs next-node (disj unvisited next-node)))))))
+
+(defn diff
+  [vals]
+  (map - (next vals) vals))
+
 (defn mean [coll]
   (let [sum (apply + coll)
         count (count coll)]
@@ -126,6 +131,18 @@
         (map #(range (dec %) (+ 2 %)))
         (apply combo/cartesian-product)
         (filter filter-fn))))
+
+(defn encode-hex
+  [s]
+  (apply str (map #(format "%02x" %) (.getBytes s "UTF-8"))))
+
+(defn decode-hex
+  [s]
+  (let [bytes (into-array Byte/TYPE
+                          (map (fn [[x y]]
+                                 (unchecked-byte (Integer/parseInt (str x y) 16)))
+                               (partition 2 s)))]
+    (String. bytes "UTF-8")))
 
 (defn exclusive-points-around
   [point]
