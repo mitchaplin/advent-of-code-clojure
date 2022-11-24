@@ -5,8 +5,9 @@
 
 (defn has-three-increasing?
   [i]
-  (let [values (map #(map (fn [x] (apply int x)) %) (partition 3 1 (str/split i #"")))
-        t (some true? (map #(every? (fn [x] (= x 1)) (utils/diff %)) values))]
+  (let [values (map #(map (fn [x] (apply int x)) %)
+                    (partition 3 1 (str/split i #"")))
+        t (some true? (map (fn [a b c] (< a b c) %) values))]
     t))
 
 (defn contains-two-pairs?
