@@ -70,36 +70,59 @@
   [x & factors]
   (some zero? (map #(rem x %) factors)))
 
-(def ^:private inf Double/POSITIVE_INFINITY)
 
-(defn update-costs
-  "Returns costs updated with any shorter paths found to curr's unvisisted
-  neighbors by using curr's shortest path"
-  [g costs unvisited curr]
-  (let [curr-cost (get costs curr)]
-    (reduce-kv
-      (fn [c nbr nbr-cost]
-        (if (unvisited nbr)
-          (update-in c [nbr] min (+ curr-cost nbr-cost))
-          c))
-      costs
-      (get g curr))))
+(defn cost-from
+  "What is the edge cost of going from one vertex to another connected vertex"
+  [weighted-graph start goal]
+  (get-in weighted-graph [start goal]))
 
-(defn dijkstra
-  "Returns a map of nodes to minimum cost from src using Dijkstra algorithm.
-  Graph is a map of nodes to map of neighboring nodes and associated cost.
-  Optionally, specify destination node to return once cost is known"
-  ([g src]
-   (dijkstra g src nil))
-  ([g src dst]
-   (loop [costs (assoc (zipmap (keys g) (repeat inf)) src 0)
-          curr src
-          unvisited (disj (apply hash-set (keys g)) src)]
-     (cond
-       (= curr dst)
-       (select-keys costs [dst])
+(defn alternating-pairs
+  "Turn a sequence into alternating pairs
+   i.e [:a :b :c] -> [[:a :b] [:b :c]]"
+  [coll]
+  (let [[x y] coll
+        xs (rest coll)]
+    (if (empty? xs)
+      []
+      (->> (conj [] [x y] (alternating-pairs xs))
+           flatten
+           (partition 2)))))
 
-       (or (empty? unvisited) (= inf (get costs curr))) nil :else (let [next-costs (update-costs g costs unvisited curr) next-node (apply min-key next-costs unvisited)] (recur next-costs next-node (disj unvisited next-node)))))))
+(defn dfs
+  "Depth first search to find all paths to a goal"
+  [graph goal]
+  (fn search
+    [path visited]
+    (let [current (peek path)]
+      (if (= goal current)
+        [path]
+        (->> current graph keys
+             (remove visited)
+             (mapcat #(search (conj path %) (conj visited %))))))))
+
+(defn find-paths
+  "Find all paths in a directed graph"
+  [graph start goal]
+  (let [visited-nodes #{start}]
+    ((dfs graph goal) [start] visited-nodes)))
+
+(defn path-cost
+  "Given a path i.e [:a :b :c] and a weighted graph g
+   what is the total cost of this path?"
+  [g path]
+  (let [pairs (alternating-pairs path)]
+    (->> (map #(apply (partial cost-from g) %) pairs)
+         (reduce +))))
+
+(defn cost
+  "Find the costs of all paths in a weighted directed graph"
+  [weighted-graph start goal]
+  (let [all-paths (find-paths weighted-graph start goal)]
+    (map (partial path-cost weighted-graph) all-paths)))
+
+(defn min-cost [weighted-graph start goal]
+  (apply min
+         (cost weighted-graph start goal)))
 
 (defn diff
   [vals]

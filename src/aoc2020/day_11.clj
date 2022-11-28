@@ -1,7 +1,7 @@
 (ns aoc2020.day_11
   (:require [clojure.string :as str]))
 
-(def raw (slurp "resources/2020/day_11_practice.txt"))
+(def raw (slurp "resources/2020/day_13_practice.txt"))
 (def processed (str/split-lines raw))
 
 (def max-len (count (first processed)))
