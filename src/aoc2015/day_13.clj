@@ -3,7 +3,7 @@
             [utils :as utils]
             [clojure.math.combinatorics :as combo]))
 
-(def raw (slurp "resources/2015/day_13_2.txt"))
+(def raw (slurp "resources/2015/day_13_practice.txt"))
 (def processed (str/split-lines raw))
 
 ;PART 1 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

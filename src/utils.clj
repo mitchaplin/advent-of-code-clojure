@@ -146,15 +146,6 @@
             top-val (nth sorted halfway)]
         (mean [bottom-val top-val])))))
 
-(defn points-around
-  ([point]
-   (points-around point identity))
-  ([point filter-fn]
-   (->> point
-        (map #(range (dec %) (+ 2 %)))
-        (apply combo/cartesian-product)
-        (filter filter-fn))))
-
 (defn encode-hex
   [s]
   (apply str (map #(format "%02x" %) (.getBytes s "UTF-8"))))
@@ -167,6 +158,20 @@
                                (partition 2 s)))]
     (String. bytes "UTF-8")))
 
+(defn points-around
+  ([point]
+   (points-around point identity))
+  ([point filter-fn]
+   (->> point
+        (map #(range (dec %) (+ 2 %)))
+        (apply combo/cartesian-product)
+        (filter filter-fn))))
+
 (defn exclusive-points-around
   [point]
   (points-around point (fn [x] (not= x point))))
+
+(defn inclusive-range
+  [a b]
+  (range a (inc b)))
+
