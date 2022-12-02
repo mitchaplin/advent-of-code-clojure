@@ -175,3 +175,6 @@
   [a b]
   (range a (inc b)))
 
+(defn update-with
+  [km k f v default-value]
+  (merge km {k (f (or (get km k) default-value) v)}))
