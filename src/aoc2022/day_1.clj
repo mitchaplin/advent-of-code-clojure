@@ -1,9 +1,7 @@
 (ns aoc2022.day-1
   (:require [clojure.string :as str]))
 
-(def raw
-  (->> "resources/2022/day_1.txt"
-       (slurp)))
+(def raw (slurp "resources/2022/day_1.txt"))
 
 (def processed (map #(str/split % #"\n") (str/split raw #"\n\n")))
 
