@@ -16,8 +16,8 @@
 
 ;PART 1 & 2 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 (defn get-scores
-  [p1?]
-  (reduce + (map #(if p1? (get scores-p1 %) (get scores-p2 %)) (transform-inputs))))
+  [score-map]
+  (reduce + (map #(get score-map %) (transform-inputs))))
 
-;(get-scores true) part-1
-;(get-scores false) part-2
+;(get-scores scores-p1) part-1
+;(get-scores scores-p2) part-2
