@@ -5,10 +5,12 @@
 
 (def processed (map #(str/split % #"\n") (str/split raw #"\n\n")))
 
+;PART 1 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 (defn part-1
   []
   (apply max (map (fn [x] (reduce + (map #(Integer/parseInt %) x))) processed)))
 
+;PART 2 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 (defn part-2
   []
   (reduce + (take 3 (reverse (sort (map (fn [x] (reduce + (map #(Integer/parseInt %) x))) processed))))))

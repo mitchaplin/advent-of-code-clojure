@@ -5,6 +5,10 @@
             [clojure.math.combinatorics :as combo])
   (:import (java.io PushbackReader)))
 
+(defn read-file [file]
+  (with-open [reader (clojure.java.io/reader file)]
+    (reduce conj [] (line-seq reader))))
+
 (defn in?
   "true if coll contains elm"
   [coll elm]
