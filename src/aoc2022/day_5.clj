@@ -6,22 +6,25 @@
 (def practice {:1 ["Z" "N"], :2 ["M" "C" "D"], :3 ["P"]})
 (def real-data {:1 ["W" "M" "L" "F"], :2 ["B" "Z" "V" "M" "F"], :3 ["H" "V" "R" "S" "L" "Q"]
                 :4 ["F" "S" "V" "Q" "P" "M" "T" "J"], :5 ["L" "S" "W"], :6 ["F" "V" "P" "M" "R" "J" "W"]
-                :7 ["J" "Q" "C" "P" "N" "R" "F"], :8 ["V" "H" "P" "S" "Z" "W" "R" "B"],
-                :9 ["B" "M" "J" "C" "G" "H" "Z" "W"]})
+                :7 ["J" "Q" "C" "P" "N" "R" "F"], :8 ["V" "H" "P" "S" "Z" "W" "R" "B"], :9 ["B" "M" "J" "C" "G" "H" "Z" "W"]})
 
 (defn update-cargo
   [cargo [_ amt _ from _ to] r]
-  (let [updated-move (assoc cargo
-                       (keyword to)
-                       (into [] (flatten (conj (get cargo (keyword to))
-                                               (r (take-last (utils/parse-int amt)
-                                                             (get cargo (keyword from))))))))
+  (let [f (keyword from)
+        t (keyword to)
+        a (utils/parse-int amt)
+        updated-move (assoc cargo
+                       t
+                       (into [] (flatten (conj (get cargo t)
+                                               (r (take-last a (get cargo f)))))))
         updated-remove (assoc updated-move
-                         (keyword from)
-                         (into [] (drop-last (utils/parse-int amt) (get updated-move (keyword from)))))]
+                         f
+                         (into [] (drop-last a (get updated-move f))))]
 
     updated-remove))
 
+
+;PART 1 & 2 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 (defn process-instructions
   [f]
   (let []
