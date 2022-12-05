@@ -15,11 +15,11 @@
         a (utils/parse-int amt)
         updated-move (assoc cargo
                        t
-                       (into [] (flatten (conj (get cargo t)
-                                               (r (take-last a (get cargo f)))))))
+                       (into [] (flatten (conj (cargo t)
+                                               (r (take-last a (cargo f)))))))
         updated-remove (assoc updated-move
                          f
-                         (into [] (drop-last a (get updated-move f))))]
+                         (into [] (drop-last a (updated-move f))))]
 
     updated-remove))
 
