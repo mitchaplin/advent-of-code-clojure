@@ -182,3 +182,16 @@
 (defn update-with
   [km k f v default-value]
   (merge km {k (f (or (get km k) default-value) v)}))
+
+(defn split-by [pred coll]
+  (lazy-seq
+    (when-let [s (seq coll)]
+      (let [[xs ys] (split-with pred s)]
+        (if (seq xs)
+          (cons xs (split-by pred ys))
+          (let [!pred (complement pred)
+                skip (take-while !pred s)
+                others (drop-while !pred s)
+                [xs ys] (split-with pred others)]
+            (cons (concat skip xs)
+                  (split-by pred ys))))))))
