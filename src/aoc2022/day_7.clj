@@ -13,11 +13,10 @@
     (assoc fs
       new-dir-keymap
       (if (nil? (get fs new-dir-keymap))
-       value
+        value
         (+ value (get fs new-dir-keymap))))))
 
-
-(defn determine-input
+(defn execute-instruction
   [l curr-dir-keymap fs]
   (cond (> (count l) 2)
         (cond (= (last l) "..")
@@ -44,16 +43,16 @@
          curr-dir-keymap [:/]
          file-sys {}]
     (if (empty? i)
-      file-sys
-      (let [[km fs] (determine-input (first i) curr-dir-keymap file-sys)]
+      (sort file-sys)
+      (let [[km fs] (execute-instruction (first i) curr-dir-keymap file-sys)]
         (recur (rest i)
                km
                fs)))))
 
-(def finished-totals (sort (run-instructions)))
-(def total-keys (map key finished-totals))
-(def total-map (->> total-keys
-                    (map (fn [x] {x (->> (filter #(utils/col-starts-with? (first %) x) finished-totals)
+(def sorted-fs (run-instructions))
+(def fs-keys (map key sorted-fs))
+(def total-map (->> fs-keys
+                    (map (fn [x] {x (->> (filter #(utils/col-starts-with? (first %) x) sorted-fs)
                                          (map second)
                                          (reduce +))}))
                     (apply merge)))
