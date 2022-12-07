@@ -195,3 +195,13 @@
                 [xs ys] (split-with pred others)]
             (cons (concat skip xs)
                   (split-by pred ys))))))))
+
+(defn growing-chunks [src]
+  (->> (range)
+       (reductions #(drop %2 %1) src)
+       (take-while seq)
+       (map-indexed take)
+       rest))
+
+(defn col-starts-with? [col subcol]
+  (and (every? true? (map #(= %1 %2) subcol col)) (<= (count subcol) (count col))))
