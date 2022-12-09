@@ -57,13 +57,14 @@
                                          (reduce +))}))
                     (apply merge)))
 
+;PART 1 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 (defn part-1
   []
   (->> total-map
        (remove #(> (second %) 100000))
        (vals)
        (reduce +)))
-
+;PART 2 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 (defn part-2
   []
   (->> total-map
@@ -71,3 +72,6 @@
        (sort-by second)
        first
        (val)))
+
+;(part-1)
+;(part-2)

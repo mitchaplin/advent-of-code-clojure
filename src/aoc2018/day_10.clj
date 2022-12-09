@@ -28,7 +28,7 @@
 
 (defn do-end-condition-check
   [points]
-  (true? (check-end-condition points)))
+  (check-end-condition points))
 
 (defn calculate-points
   [initial]

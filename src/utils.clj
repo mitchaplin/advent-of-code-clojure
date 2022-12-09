@@ -203,5 +203,16 @@
        (map-indexed take)
        rest))
 
+(defn agg [x y] (if (coll? x) (cons y x) (list y x)))
+
+(defn partition-inc
+  [items]
+  (->> (reductions (fn [[_ x] n] (split-at n x))
+                   [[] items]
+                   (iterate inc 1))
+       (map first)
+       rest
+       (take-while seq)))
+
 (defn col-starts-with? [col subcol]
   (and (every? true? (map #(= %1 %2) subcol col)) (<= (count subcol) (count col))))
