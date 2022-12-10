@@ -216,3 +216,10 @@
 
 (defn col-starts-with? [col subcol]
   (and (every? true? (map #(= %1 %2) subcol col)) (<= (count subcol) (count col))))
+
+(defn abs [n] (max n (- n)))
+
+(defn get-max-manhatten-distance
+  [ax ay bx by]
+  (max (utils/abs (/ (- ax bx) 2))
+       (utils/abs (/ (- ay by) 2))))
