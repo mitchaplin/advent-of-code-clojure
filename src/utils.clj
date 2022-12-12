@@ -20,10 +20,6 @@
   [resource-file]
   (edn/read (PushbackReader. (io/reader (io/resource resource-file)))))
 
-; fnil inc into map, add it if key does not exist without null pointer exception
-; (update {} :a inc)
-; (update {} :a (fnil inc 0))
-
 (defn parse-int [s] (Integer/parseInt s))
 (defn parse-binary [s] (Integer/parseInt s 2))
 
