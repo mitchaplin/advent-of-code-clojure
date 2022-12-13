@@ -54,4 +54,4 @@
 
 (def graph (into (sorted-map) (map (fn [x] {(key x) (:neighbors (val x))}) generated-neighbors)))
 
-(utils/dijkstra graph start-kw end-kw)
+;(utils/dijkstra graph start-kw end-kw) part-1
