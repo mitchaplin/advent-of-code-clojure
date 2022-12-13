@@ -5,4 +5,4 @@
                  [org.clojure/math.combinatorics "0.1.6"]
                  [org.clojure/math.numeric-tower "0.0.4"]
                  [org.flatland/useful "0.11.6"]]
-  :jvm-opts ["-Xmx24G"])
+  :jvm-opts ["-Xmx48G"])

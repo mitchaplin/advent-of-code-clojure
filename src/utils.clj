@@ -1,9 +1,13 @@
 (ns utils
-  (:require [clojure.edn :as edn]
-            [clojure.java.io :as io]
-            [clojure.string :as str]
-            [clojure.math.combinatorics :as combo])
+  (:require
+    [clojure.data.priority-map :as pm]
+    [clojure.edn :as edn]
+    [clojure.java.io :as io]
+    [clojure.string :as str]
+    [clojure.math.combinatorics :as combo])
   (:import (java.io PushbackReader)))
+
+(def ^:private inf Double/POSITIVE_INFINITY)
 
 (defn read-file [file]
   (with-open [reader (clojure.java.io/reader file)]
@@ -15,6 +19,10 @@
   (if (nil? (some #(= elm %) coll))
     false
     true))
+
+(defn transpose
+  [colls]
+  (vec (apply map vector colls)))
 
 (defn load-edn
   [resource-file]
@@ -219,3 +227,38 @@
   [ax ay bx by]
   (max (utils/abs (/ (- ax bx) 2))
        (utils/abs (/ (- ay by) 2))))
+
+(defn update-costs
+  "Returns costs updated with any shorter paths found to curr's unvisisted
+  neighbors by using curr's shortest path"
+  [g costs unvisited curr]
+  (let [curr-cost (get costs curr)]
+    (reduce-kv
+      (fn [c nbr nbr-cost]
+        (if (unvisited nbr)
+          (update-in c [nbr] min (+ curr-cost nbr-cost))
+          c))
+      costs
+      (get g curr))))
+
+(defn dijkstra
+  "Returns a map of nodes to minimum cost from src using Dijkstra algorithm.
+  Graph is a map of nodes to map of neighboring nodes and associated cost.
+  Optionally, specify destination node to return once cost is known"
+  ([g src]
+   (dijkstra g src nil))
+  ([g src dst]
+   (loop [costs (assoc (zipmap (keys g) (repeat inf)) src 0)
+          curr src
+          unvisited (disj (apply hash-set (keys g)) src)]
+     (cond
+       (= curr dst)
+       (select-keys costs [dst])
+
+       (or (empty? unvisited) (= inf (get costs curr)))
+       costs
+
+       :else
+       (let [next-costs (update-costs g costs unvisited curr)
+             next-node (apply min-key next-costs unvisited)]
+         (recur next-costs next-node (disj unvisited next-node)))))))
