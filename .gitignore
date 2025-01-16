@@ -2,6 +2,8 @@
 .DS_Store
 .nrepl-port
 .iml
+.calva
+.clj-kondo
 target/
 advent.iml
 hello-world-2.iml
